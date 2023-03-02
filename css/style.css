@@ -22,7 +22,8 @@ li {
   position: absolute;
   left: 0px;
   opacity: 0;
-  transition: opacity 1.5s;
+  /* transition effect, seconds */
+  transition: opacity 1s;
 }
 
 #gallery .buttons {
