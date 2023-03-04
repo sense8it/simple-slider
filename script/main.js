@@ -1,9 +1,23 @@
 const imgArr = document.querySelectorAll('#gallery .photos img');
-let i = 0;
+let i = Number(localStorage.getItem('imgArr_i')) || 0;
+imgArr[i].classList.add('showed');
+// console.log('START imgArr: ' + i); //for debugging
+
+const checkbox = document.querySelector('#stop_play');
+checkbox.checked = localStorage.getItem('checked') 
+  ? JSON.parse(localStorage.getItem('checked')) 
+  : true;
+  // console.log('START checkbox.checked: ' + checkbox.checked); //for debugging
+
+let activeButton = localStorage.getItem('activeButton') || 'play';
+// console.log('START activeButton: ' + activeButton  +  '\n\n'); //for debugging
+
+if (activeButton === 'stop') {
+  checkbox.disabled = true;
+}
+
 //x - transition effect timeout, ms
 let x = 4000;
-let activeButton = 'play';
-// console.log(i); //for debugging
 
 const playLoop = function() {
   setTimeout(slider, x);
@@ -19,6 +33,7 @@ const slider = function() {
           i = 0;
         }
           imgArr[i].classList.add('showed');
+          localStorage.setItem('imgArr_i', i);
           // console.log(i); //for debugging
           playLoop();
       }
@@ -32,7 +47,6 @@ const slider = function() {
     case 'stop':
       {
         checkbox.disabled = false;
-        // console.log('stop'); //for debugging
       }
       break;
   }
@@ -49,8 +63,9 @@ document.querySelector("#gallery .buttons .prev").onclick = function () {
   if (i < 0) {
     i = imgArr.length - 1;
   }
-  // console.log(i); //for debugging
   imgArr[i].classList.add('showed');
+  localStorage.setItem('imgArr_i', i);
+  // console.log(i); //for debugging
 };
 
 document.querySelector('#gallery .buttons .next').onclick = function () {
@@ -62,18 +77,25 @@ document.querySelector('#gallery .buttons .next').onclick = function () {
   if (i >= imgArr.length) {
     i = 0;
   }
-  // console.log(i); //for debugging
   imgArr[i].classList.add('showed');
+  localStorage.setItem('imgArr_i', i);
+  // console.log(i); //for debugging
 };
 
-const checkbox = document.querySelector('#stop_play');
 checkbox.addEventListener('change', () => {
   if (checkbox.checked) {
     activeButton = 'play';
-    // console.log('play'); //for debugging
+    localStorage.setItem('checked', checkbox.checked);
+    localStorage.setItem('activeButton', activeButton);
+    // console.log('\n\ncheckbox.checked: ' + checkbox.checked); //for debugging
+    // console.log('activeButton: ' + activeButton + '\n\n'); //for debugging
     playLoop();
   } else {
     activeButton = 'stop';
+    localStorage.setItem('checked', checkbox.checked);
+    localStorage.setItem('activeButton', activeButton);
     checkbox.disabled = true;
+    // console.log('\n\ncheckbox.checked: ' + checkbox.checked); //for debugging
+    // console.log('activeButton: ' + activeButton + '\n\n'); //for debugging
   }
 });
