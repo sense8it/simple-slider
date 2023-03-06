@@ -12,16 +12,18 @@ checkbox.checked = localStorage.getItem('checked')
 let activeButton = localStorage.getItem('activeButton') || 'play';
 // console.log('START activeButton: ' + activeButton  +  '\n\n'); //for debugging
 
-if (activeButton === 'stop') {
-  checkbox.disabled = true;
-}
-
 //x - transition effect timeout, ms
 let x = 4000;
+let timerId;
 
 const playLoop = function() {
-  setTimeout(slider, x);
-}
+  timerId = setTimeout(slider, x);
+  // console.log('timerId: ' + timerId); //for debugging
+  if (activeButton === 'stop') {
+    clearTimeout(timerId);
+    // console.log('clearTimeout for timerId: ' + timerId); //for debugging
+  }
+};
 
 const slider = function() {
   switch (activeButton) {
@@ -38,17 +40,6 @@ const slider = function() {
           playLoop();
       }
       break;
-    case 'click':
-      {
-        activeButton = 'play';
-        playLoop();
-      }
-      break;
-    case 'stop':
-      {
-        checkbox.disabled = false;
-      }
-      break;
   }
 };
 
@@ -56,7 +47,10 @@ playLoop();
 
 document.querySelector("#gallery .buttons .prev").onclick = function () {
   if (activeButton !== 'stop') {
-    activeButton = 'click';
+    clearTimeout(timerId);
+    // console.log('clearTimeout for timerId: ' + timerId); //for debugging
+    activeButton = 'play';
+    playLoop();
   }
   imgArr[i].classList.remove('showed');
   i--;
@@ -70,7 +64,10 @@ document.querySelector("#gallery .buttons .prev").onclick = function () {
 
 document.querySelector('#gallery .buttons .next').onclick = function () {
   if (activeButton !== 'stop') {
-    activeButton = 'click';
+    clearTimeout(timerId);
+    // console.log('clearTimeout for timerId: ' + timerId); //for debugging
+    activeButton = 'play';
+    playLoop();
   }
   imgArr[i].classList.remove('showed');
   i++;
@@ -94,7 +91,8 @@ checkbox.addEventListener('change', () => {
     activeButton = 'stop';
     localStorage.setItem('checked', checkbox.checked);
     localStorage.setItem('activeButton', activeButton);
-    checkbox.disabled = true;
+    clearTimeout(timerId);
+    // console.log('clearTimeout for timerId: ' + timerId); //for debugging
     // console.log('\n\ncheckbox.checked: ' + checkbox.checked); //for debugging
     // console.log('activeButton: ' + activeButton + '\n\n'); //for debugging
   }
